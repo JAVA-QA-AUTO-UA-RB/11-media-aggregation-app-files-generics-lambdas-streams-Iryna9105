@@ -1,0 +1,15 @@
+Tracks count: 20
+Average duration: 275,70 seconds
+Top 3 tracks by rating: 
+1. Hotel California (rating 10)
+2. Sweet Child O' Mine (rating 10)
+3. Bohemian Rhapsody (rating 10)
+
+Pop tracks:
+- Shape of You
+- Blinding Lights
+- Billie Jean
+- Rolling in the Deep
+- Uptown Funk
+- Poker Face
+- Halo

@@ -5,86 +5,96 @@ import com.example.media.classes.Track;
 import com.example.media.classes.Video;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * Клас-утиліта для запису статистики у вихідні файли.
- *
- * Студенти мають реалізувати методи нижче з використанням:
- * - Stream API
- * - лямбда-виразів
- * - method references
- *
- * Формат вихідних файлів має бути простим і "людиночитабельним"
- * (див. приклади у README.md).
- */
 public class MediaStatisticsWriter {
 
-    /**
-     * Запис статистики по музичних треках у файл.
-     *
-     * Очікуваний формат файлу `tracks_output.txt`:
-     * --------------------------------------------
-     * Tracks count: <загальна кількість треків>
-     * Average duration: <середня тривалість у секундах> seconds
-     *
-     * Top 3 tracks by rating:
-     * 1. <назва треку> (rating <рейтинг>)
-     * 2. <назва треку> (rating <рейтинг>)
-     * 3. <назва треку> (rating <рейтинг>)
-     *
-     * Pop tracks:
-     * - <назва треку>
-     * - <назва треку>
-     * --------------------------------------------
-     *
-     * Пояснення:
-     * - Tracks count → кількість елементів у плейлисті
-     * - Average duration → середня тривалість у секундах
-     * - Top 3 → відсортовані за рейтингом спаданням,
-     *   при однаковому рейтингу брати найдовші
-     * - Pop tracks → усі треки, у яких жанр == "Pop"
-     */
+
     public static void writeTrackStats(Playlist<Track> playlist, String filename) throws IOException {
+
         // TODO: Реалізуйте цей метод
-        // Підказки:
-        // - Використайте playlist.getItems().size() для підрахунку кількості
-        // - Використайте stream().mapToInt(Track::getDuration).average() для середньої тривалості
-        // - Використайте stream().sorted(...).limit(3) для топ-3 за рейтингом
-        // - Використайте stream().filter(t -> t.getGenre().equalsIgnoreCase("Pop")) для відбору Pop-треків
-        // - Запишіть результати у файл через PrintWriter або Files.write()
+
+        List<Track> tracks = playlist.getItems();
+        if (tracks.isEmpty()) {
+            Files.write(Paths.get(filename), "No tracks available.".getBytes());
+            return;
+        }
+        int count = tracks.size();
+        double avgDuration = tracks.stream()
+                .mapToInt(Track::getDuration)
+                .average()
+                .orElse(0);
+
+        List<Track> top3 = tracks.stream()
+                .sorted(Comparator.comparingInt(Track::getRating).reversed()
+                        .thenComparing(Track::getDuration, Comparator.reverseOrder()))
+                .limit(3)
+                .collect(Collectors.toList());
+
+        List<Track> popTracks = tracks.stream()
+                .filter(t -> t.getGenre().equalsIgnoreCase("Pop"))
+                .collect(Collectors.toList());
+
+        try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(Paths.get(filename)))) {
+            writer.println("Tracks count: " + count);
+            writer.println();
+            writer.printf("Average duration: %.2f seconds", avgDuration);
+            writer.println();
+            writer.println("Top 3 tracks by rating: ");
+            for (int i = 0; i < top3.size(); i++) {
+                Track t = top3.get(i);
+                writer.printf("%d. %s (rating %d)%n", i + 1, t.getTitle(), t.getRating());
+            }
+            writer.println();
+            writer.println("Pop tracks:");
+            for (Track t : popTracks) {
+                writer.println("- " + t.getTitle());
+            }
+        }
+
     }
 
-    /**
-     * Запис статистики по відео у файл.
-     *
-     * Очікуваний формат файлу `videos_output.txt`:
-     * --------------------------------------------
-     * Videos count: <загальна кількість відео>
-     * Average duration: <середня тривалість у секундах> seconds
-     *
-     * Top 3 videos by views:
-     * 1. <назва відео> (<кількість переглядів> views)
-     * 2. <назва відео> (<кількість переглядів> views)
-     * 3. <назва відео> (<кількість переглядів> views)
-     *
-     * Education videos:
-     * - <назва відео>
-     * - <назва відео>
-     * --------------------------------------------
-     *
-     * Пояснення:
-     * - Videos count → кількість елементів у плейлисті
-     * - Average duration → середня тривалість у секундах
-     * - Top 3 → відсортовані за views спаданням
-     * - Education videos → усі відео, у яких category == "Education"
-     */
     public static void writeVideoStats(Playlist<Video> playlist, String filename) throws IOException {
-        // TODO: Реалізуйте цей метод
-        // Підказки:
-        // - Використайте playlist.getItems().size() для підрахунку кількості
-        // - Використайте stream().mapToInt(Video::getDuration).average() для середньої тривалості
-        // - Використайте stream().sorted(...).limit(3) для топ-3 за views
-        // - Використайте stream().filter(v -> v.getCategory().equalsIgnoreCase("Education")) для Education-відео
-        // - Запишіть результати у файл через PrintWriter або Files.write()
+        List<Video> videos = playlist.getItems();
+        if (videos.isEmpty()){
+            Files.write(Paths.get(filename), "No videos available.".getBytes());
+            return;
+        }
+        int count = videos.size();
+
+        double avgDuration = videos.stream()
+                .mapToInt(Video::getDuration)
+                .average()
+                .orElse(0);
+
+        List <Video> top3 = videos.stream()
+                .sorted(Comparator.comparingInt(Video::getViews).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
+
+        List<Video> educationVideos = videos.stream()
+                .filter(v -> v.getCategory().equalsIgnoreCase("Education"))
+                .collect(Collectors.toList());
+
+        try(PrintWriter writer = new PrintWriter(Files.newBufferedWriter(Paths.get(filename)))){
+            writer.println("Videos count: " + count);
+            writer.println("Average duration: " + String.format("%.2f", avgDuration) + " seconds");
+            writer.println();
+            writer.println("Top 3 videos by views:");
+            for (int i=0; i < top3.size(); i++){
+                Video v = top3.get(i);
+                writer.println((i + 1) + ". " + v.getTitle() + " (rating " + v.getViews() + ")");
+            }
+            writer.println();
+            writer.printf("Education videos:");
+            for (Video v : educationVideos){
+                writer.println("-" + v.getTitle());
+            }
+        }
     }
 }

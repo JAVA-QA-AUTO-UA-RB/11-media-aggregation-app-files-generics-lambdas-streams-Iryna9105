@@ -29,7 +29,9 @@ public class Track extends Media {
 
     @Override
     public String toString() {
+        return getTitle() + ", " + getArtist() + ", " + getGenre() + ", " + getRating() + ".";
+
         // TODO: Return string with title, artist, genre, rating
-        return super.toString();
+
     }
 }
