@@ -1,5 +1,5 @@
 Videos count: 20
-Average duration: 579,00 seconds
+Average duration: 579.00 seconds
 
 Top 3 videos by views:
 1. Funny Cats Compilation (rating 1000000)

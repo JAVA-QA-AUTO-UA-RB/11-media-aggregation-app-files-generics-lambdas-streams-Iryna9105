@@ -1,5 +1,6 @@
 Tracks count: 20
-Average duration: 275,70 seconds
+
+Average duration: 275.70 seconds
 Top 3 tracks by rating: 
 1. Hotel California (rating 10)
 2. Sweet Child O' Mine (rating 10)
