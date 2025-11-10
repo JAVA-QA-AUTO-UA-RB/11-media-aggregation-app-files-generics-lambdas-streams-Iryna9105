@@ -1,0 +1,15 @@
+Videos count: 20
+Average duration: 579.00 seconds
+
+Top 3 videos by views:
+1. Funny Cats Compilation (rating 1000000)
+2. Funny Dogs Compilation (rating 900000)
+3. World Cup Moments (rating 880000)
+
+Education videos:-Top 10 Java Tips
+-Java Streams Explained
+-History of Rock Music
+-Top 5 Space Discoveries
+-Machine Learning Basics
+-Physics Explained
+-AI in Everyday Life
